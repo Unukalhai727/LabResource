@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>系统重置流程 - 实验室资源记录</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7cfb\u7edf\u91cd\u7f6e\u6d41\u7a0b";
+        var mkdocs_page_input_path = "admin\\reset.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> 实验室资源记录
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">用户手册</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../user/server/">服务器</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../user/dataset/">数据集</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">运维手册</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">系统重置流程</a>
+    <ul class="current">
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../permission/">用户、管理员及权限操作</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../automount/">NAS自动挂载</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">实验室资源记录</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">运维手册</li>
+      <li class="breadcrumb-item active">系统重置流程</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="_1">系统重置流程</h2>
+<ol>
+<li>备份数据</li>
+<li>安装Ubuntu Server 24.04 LTS<ol>
+<li>在版本选择页勾选 third-party driver</li>
+<li>在镜像源配置页填入BFSU的URL</li>
+<li>在磁盘配置页反选 LVM</li>
+<li>在附加设置页勾选 openssh server</li>
+</ol>
+</li>
+<li>安装必要包<ul>
+<li>build-essential: C/C++编译套件</li>
+<li>nvidia-headless-<version>-server-open: nvidia驱动，如果在上一步已经安装可跳过</li>
+<li>nvidia-utils-<version>-server: <code>nvidia-smi</code>管理工具</li>
+</ul>
+</li>
+<li>（optional）调整Local TTY分辨率</li>
+</ol>
+<pre><code class="language-bash"># 编辑`/etc/default/grub`
+GRUB_GFXMODE=1920x1080
+GRUB_GFXPAYLOAD_LINUX=keep
+</code></pre>
+<pre><code class="language-bash"># 执行
+sudo update-grub
+sudo reboot
+</code></pre>
+<ol>
+<li>配置防火墙</li>
+</ol>
+<pre><code class="language-bash"># 1) 对实验室内网 10.31.112.0/24：开放全部入站端口
+sudo ufw allow from 10.31.112.0/24
+
+# 2) 对校园网 10.0.0.0/8：仅开放 22 入站端口（SSH）
+sudo ufw allow from 10.0.0.0/8 to any port 22 proto tcp
+
+# 4) 启用防火墙
+sudo ufw enable
+</code></pre>
+<ol>
+<li>配置SSH<ol>
+<li>上传公钥</li>
+<li>设置为仅允许密钥登录</li>
+</ol>
+</li>
+<li>（optional）编译并安装btop</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../user/dataset/" class="btn btn-neutral float-left" title="数据集"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../permission/" class="btn btn-neutral float-right" title="用户、管理员及权限操作">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../user/dataset/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../permission/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

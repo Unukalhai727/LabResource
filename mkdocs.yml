@@ -1,0 +1,14 @@
+site_name: 实验室资源记录
+
+theme:
+  name: readthedocs
+
+nav:
+  - 首页: index.md
+  - 用户手册:
+    - 服务器: user/server.md
+    - 数据集: user/dataset.md
+  - 运维手册:
+    - 系统重置流程: admin/reset.md
+    - 用户、管理员及权限操作: admin/permission.md
+    - NAS自动挂载: admin/automount.md

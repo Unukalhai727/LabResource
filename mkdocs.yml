@@ -6,6 +6,7 @@ theme:
 nav:
   - 首页: index.md
   - 用户手册:
+    - 教程：SSH 密钥登录: user/ssh.md
     - 服务器: user/server.md
     - 数据集: user/dataset.md
   - 运维手册:

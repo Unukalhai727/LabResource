@@ -12,7 +12,6 @@
     - nvidia-utils-<version>-server: `nvidia-smi`管理工具
 4. （optional）调整Local TTY分辨率
 
-
 ```bash
 # 编辑`/etc/default/grub`
 GRUB_GFXMODE=1920x1080
@@ -41,4 +40,3 @@ sudo ufw enable
 6. 配置SSH
     1. 上传公钥
     2. 设置为仅允许密钥登录
-7. （optional）编译并安装btop

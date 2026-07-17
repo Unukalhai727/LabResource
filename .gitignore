@@ -1,0 +1,7 @@
+*
+!.gitignore
+!README.md
+!mkdocs.yml
+!docs/
+!docs/**/
+!docs/**/*.md

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>教程：SSH 密钥登录 - 实验室资源记录</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u6559\u7a0b\uff1aSSH \u5bc6\u94a5\u767b\u5f55";
+        var mkdocs_page_input_path = "user\\ssh.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> 实验室资源记录
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">用户手册</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">教程：SSH 密钥登录</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-ssh">1. 准备并提交 SSH 公钥</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#11">1.1 检查是否已有密钥</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#12">1.2 生成新密钥</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#13">1.3 向管理员提交公钥</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2">2. 连接服务器</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#21">2.1 通过内网连接</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#22">2.2 通过公网连接</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3">3. （可选）配置连接别名</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4">4. 常见问题</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#permission-denied-publickey">Permission denied (publickey)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#connection-timed-out-connection-refused">Connection timed out或 Connection refused</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#remote-host-identification-has-changed">REMOTE HOST IDENTIFICATION HAS CHANGED</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../server/">服务器</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../dataset/">数据集</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">运维手册</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../admin/reset/">系统重置流程</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../admin/permission/">用户、管理员及权限操作</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../admin/automount/">NAS自动挂载</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">实验室资源记录</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">用户手册</li>
+      <li class="breadcrumb-item active">教程：SSH 密钥登录</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="ssh">教程：使用 SSH 密钥连接实验室服务器</h1>
+<p>本文介绍如何使用 SSH 公钥和私钥登录实验室服务器，适用于 Linux、macOS 和 Windows 10/11 自带的 OpenSSH 客户端。</p>
+<p>关于 SSH 密钥登录的原理，可以阅读<a href="https://wiki.archlinuxcn.org/wiki/SSH_密钥">SSH 密钥 - Arch Linux 中文维基</a>获取稍深入的帮助。</p>
+<p>该教程以 A6000 服务器为例，假设其内网 IP 为 10.31.112.238，公网转发服务器 IP 为 115.29.196.202，转发端口为 52022。</p>
+<h2 id="1-ssh">1. 准备并提交 SSH 公钥</h2>
+<p>SSH 密钥通常保存在当前用户的 <code>~/.ssh</code> 目录中（Windows 对应<code>C:\Users\&lt;本机用户名&gt;\.ssh</code>）。</p>
+<p>其中，文件名以 <code>.pub</code> 结尾的是公钥，可以提交给管理员；不以 <code>.pub</code> 结尾的同名文件是私钥，必须妥善保管。</p>
+<h3 id="11">1.1 检查是否已有密钥</h3>
+<p>打开终端，查看 <code>.ssh</code> 目录：</p>
+<pre><code class="language-bash"># Linux / macOS
+ls -al ~/.ssh
+</code></pre>
+<pre><code class="language-powershell"># Windows PowerShell
+Get-ChildItem $HOME\.ssh
+</code></pre>
+<p>常见的密钥文件包括：</p>
+<ul>
+<li><code>id_ed25519</code> 和 <code>id_ed25519.pub</code>（现代常用的认证算法）</li>
+<li><code>id_rsa</code> 和 <code>id_rsa.pub</code>（较早使用认证算法）</li>
+</ul>
+<p><strong>如果目录中存在成对的私钥和公钥文件，通常可以直接使用，无需重复生成。</strong></p>
+<h3 id="12">1.2 生成新密钥</h3>
+<p>如果没有现存的 SSH 密钥，则需要生成新密钥。</p>
+<p>推荐使用 Ed25519 算法。在 Linux、macOS 或 Windows PowerShell 中运行：</p>
+<pre><code class="language-bash">ssh-keygen -t ed25519
+</code></pre>
+<p>随后根据提示操作：</p>
+<ol>
+<li>提示保存位置时，直接按 Enter 使用默认路径（通常为<code>~/.ssh/id_ed25519</code>）；如果默认路径已存在，应取消操作并先确认现有密钥的用途；</li>
+<li>提示输入 passphrase 时，建议直接按 Enter 留空；</li>
+<li>生成完成后会得到私钥 <code>id_ed25519</code> 和公钥 <code>id_ed25519.pub</code>。</li>
+</ol>
+<h3 id="13">1.3 向管理员提交公钥</h3>
+<p>显示公钥：</p>
+<pre><code class="language-bash"># Linux / macOS
+cat ~/.ssh/id_ed25519.pub
+</code></pre>
+<pre><code class="language-powershell"># Windows PowerShell
+Get-Content $HOME\.ssh\id_ed25519.pub
+</code></pre>
+<p>将公钥的完整一行发送给管理员，公钥类似下面这样：</p>
+<pre><code class="language-text">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA...
+</code></pre>
+<p>管理员配置完成后，再继续下面的连接步骤。</p>
+<h2 id="2">2. 连接服务器</h2>
+<p>首次连接时，SSH 会询问是否信任服务器，并显示服务器的主机密钥指纹。</p>
+<p>输入 <code>yes</code> 后，该主机的信息会保存到本地的 <code>~/.ssh/known_hosts</code> 文件中。</p>
+<h3 id="21">2.1 通过内网连接</h3>
+<p>连接实验室或校园内网后，使用服务器的内网 IP 登录：</p>
+<pre><code class="language-bash">ssh &lt;username&gt;@10.31.112.238
+</code></pre>
+<p>将 <code>&lt;username&gt;</code> 替换为管理员提供的用户名。</p>
+<h3 id="22">2.2 通过公网连接</h3>
+<p>不在实验室内网时，可以通过公网转发地址和端口登录：</p>
+<pre><code class="language-bash">ssh &lt;username&gt;@115.29.196.202 -p 52022
+</code></pre>
+<h2 id="3">3. （可选）配置连接别名</h2>
+<p>为了避免每次输入地址和端口，可以编辑 SSH 客户端配置文件：</p>
+<pre><code class="language-text"># Linux / macOS: ~/.ssh/config
+# Windows: C:\Users\&lt;本机用户名&gt;\.ssh\config
+</code></pre>
+<p>配置示例：</p>
+<pre><code class="language-sshconfig">Host lab-a6000
+    HostName 10.31.112.238
+    User &lt;username&gt;
+    ServerAliveInterval 60
+
+Host lab-a6000-public
+    HostName 115.29.196.202
+    User &lt;username&gt;
+    Port 52022
+    ServerAliveInterval 60
+</code></pre>
+<p>保存后可以直接连接：</p>
+<pre><code class="language-bash">ssh lab-a6000
+ssh lab-a6000-public
+</code></pre>
+<h2 id="4">4. 常见问题</h2>
+<h3 id="permission-denied-publickey"><code>Permission denied (publickey)</code></h3>
+<p>表示服务器没有接受客户端提供的密钥。依次检查：</p>
+<ol>
+<li>用户名是否正确；</li>
+<li>目标服务器地址是否正确</li>
+<li>私钥是否发生变更</li>
+</ol>
+<h3 id="connection-timed-out-connection-refused"><code>Connection timed out</code>或 <code>Connection refused</code></h3>
+<p>通常是地址不可达、防火墙拦截或公网转发不可用。请确认当前网络、目标地址和端口；从校外连接时不能直接访问实验室内网地址。</p>
+<h3 id="remote-host-identification-has-changed"><code>REMOTE HOST IDENTIFICATION HAS CHANGED</code></h3>
+<p>这表示服务器主机密钥与本地记录不一致，移除<code>~/.ssh/known_hosts</code>后重新连接即可</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../.." class="btn btn-neutral float-left" title="首页"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../server/" class="btn btn-neutral float-right" title="服务器">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../.." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../server/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

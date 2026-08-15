@@ -196,16 +196,20 @@ ssh lab-a6000-public
 </code></pre>
 <h2 id="4">4. 常见问题</h2>
 <h3 id="permission-denied-publickey"><code>Permission denied (publickey)</code></h3>
-<p>表示服务器没有接受客户端提供的密钥。依次检查：</p>
+<p>服务器没有接受客户端提供的密钥，依次检查：</p>
 <ol>
-<li>用户名是否正确；</li>
-<li>目标服务器地址是否正确</li>
-<li>私钥是否发生变更</li>
+<li>检查用户名和服务器地址</li>
+<li>确认私钥是否发生变更</li>
 </ol>
 <h3 id="connection-timed-out-connection-refused"><code>Connection timed out</code>或 <code>Connection refused</code></h3>
-<p>通常是地址不可达、防火墙拦截或公网转发不可用。请确认当前网络、目标地址和端口；从校外连接时不能直接访问实验室内网地址。</p>
+<p>地址不可达、防火墙拦截或公网转发服务故障，依次检查：</p>
+<ol>
+<li>核对服务器地址和端口</li>
+<li>（可选）检查本机和路由器的防火墙设置</li>
+</ol>
+<p>若问题依旧，请联系管理员。</p>
 <h3 id="remote-host-identification-has-changed"><code>REMOTE HOST IDENTIFICATION HAS CHANGED</code></h3>
-<p>这表示服务器主机密钥与本地记录不一致，移除<code>~/.ssh/known_hosts</code>后重新连接即可</p>
+<p>服务器主机密钥与本地记录不一致，移除<code>~/.ssh/known_hosts</code>后尝试重新连接。</p>
               
             </div>
           </div><footer>

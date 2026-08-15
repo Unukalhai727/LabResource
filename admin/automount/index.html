@@ -94,40 +94,10 @@
             <div class="section" itemprop="articleBody">
               
                 <h2 id="nas">NAS自动挂载</h2>
-<p>预期效果：</p>
-<table>
-<thead>
-<tr>
-<th>场景</th>
-<th>结果</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>开机时无人访问 <code>/mnt/nas</code></td>
-<td>不连接 NAS，不阻塞启动</td>
-</tr>
-<tr>
-<td>NAS 不可用时访问</td>
-<td>尝试挂载，最多受 <code>TimeoutSec=20s</code> 限制，然后报错</td>
-</tr>
-<tr>
-<td>已挂载后 NAS 断连</td>
-<td>重试若干次后返回 <code>ETIMEDOUT</code></td>
-</tr>
-<tr>
-<td>挂载失败</td>
-<td>automount 占据 <code>/mnt/nas</code>，不会自动落到本地目录</td>
-</tr>
-<tr>
-<td>10 分钟无访问</td>
-<td>卸载 NFS，但 automount 仍占据目录，下次访问重新触发</td>
-</tr>
-</tbody>
-</table>
 <h3 id="step-1">Step 1</h3>
 <p>编写<code>/etc/systemd/system/mnt-nas.mount</code></p>
 <p>其中<code>10.31.112.30</code>为NAS的IP地址，<code>/volume1/data</code>为NAS的挂载点，<code>/mnt/nas</code>为系统的挂载位置</p>
+<p>参数<code>Options=soft,timeo=5,nofail</code>可在挂载失败时避免卡启动</p>
 <pre><code>[Unit]
 Description=Mount lab-nas data for /mnt/nas with NFS
 
@@ -135,17 +105,18 @@ Description=Mount lab-nas data for /mnt/nas with NFS
 What=10.31.112.30:/volume1/data
 Where=/mnt/nas
 Type=nfs
-Options=softerr,timeo=50,retrans=2
-TimeoutSec=20s
+Options=soft,timeo=5,nofail
 </code></pre>
 <h3 id="step-2">Step 2</h3>
 <p>编写<code>/etc/systemd/system/mnt-nas.automount</code></p>
 <pre><code class="language-latex">[Unit]
 Description=Automount NFS Share for /mnt/nas
+Requires=network-online.target
+After=network-online.target
 
 [Automount]
 Where=/mnt/nas
-TimeoutIdleSec=10min
+TimeoutIdleSec=600
 
 [Install]
 WantedBy=multi-user.target

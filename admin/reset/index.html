@@ -88,7 +88,7 @@
                 <h2 id="_1">系统重置流程</h2>
 <ol>
 <li>备份数据</li>
-<li>安装Ubuntu Server 24.04 LTS<ol>
+<li>安装Ubuntu Server 26.04 LTS<ol>
 <li>在版本选择页勾选 third-party driver</li>
 <li>在镜像源配置页填入BFSU的URL</li>
 <li>在磁盘配置页反选 LVM</li>
@@ -97,34 +97,36 @@
 </li>
 <li>安装必要包<ul>
 <li>build-essential: C/C++编译套件</li>
-<li>nvidia-headless-<version>-server-open: nvidia驱动，如果在上一步已经安装可跳过</li>
-<li>nvidia-utils-<version>-server: <code>nvidia-smi</code>管理工具</li>
+<li>nvidia-deriver-<version>-server-open: nvidia驱动，如果在上一步已经安装可跳过</li>
 </ul>
 </li>
-<li>（optional）调整Local TTY分辨率</li>
-</ol>
-<pre><code class="language-bash"># 编辑`/etc/default/grub`
-GRUB_GFXMODE=1920x1080
+<li>
+<p>（optional）调整Local TTY分辨率</p>
+<p>```bash</p>
+<h1 id="etcdefaultgrub">编辑<code>/etc/default/grub</code></h1>
+<p>GRUB_GFXMODE=1920x1080
 GRUB_GFXPAYLOAD_LINUX=keep
-</code></pre>
-<pre><code class="language-bash"># 执行
-sudo update-grub
+```</p>
+<p>```bash</p>
+<h1 id="_2">执行</h1>
+<p>sudo update-grub
 sudo reboot
-</code></pre>
+```</p>
+</li>
+<li>
+<p>配置防火墙</p>
+<p>```bash</p>
+<h1 id="1-1031112024">1) 对实验室内网 10.31.112.0/24：开放全部入站端口</h1>
+<p>sudo ufw allow from 10.31.112.0/24</p>
+<h1 id="2-100008-22-ssh">2) 对校园网 10.0.0.0/8：仅开放 22 入站端口（SSH）</h1>
+<p>sudo ufw allow from 10.0.0.0/8 to any port 22 proto tcp</p>
+<h1 id="4">4) 启用防火墙</h1>
+<p>sudo ufw enable
+```</p>
+</li>
+<li>
+<p>配置SSH</p>
 <ol>
-<li>配置防火墙</li>
-</ol>
-<pre><code class="language-bash"># 1) 对实验室内网 10.31.112.0/24：开放全部入站端口
-sudo ufw allow from 10.31.112.0/24
-
-# 2) 对校园网 10.0.0.0/8：仅开放 22 入站端口（SSH）
-sudo ufw allow from 10.0.0.0/8 to any port 22 proto tcp
-
-# 4) 启用防火墙
-sudo ufw enable
-</code></pre>
-<ol>
-<li>配置SSH<ol>
 <li>上传公钥</li>
 <li>设置为仅允许密钥登录</li>
 </ol>
